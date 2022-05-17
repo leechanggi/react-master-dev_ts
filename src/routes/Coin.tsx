@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import React from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useParams, useLocation, Routes, Route } from 'react-router';
 
 import { useQuery } from 'react-query';
+
+import { HelmetProvider, Helmet } from 'react-helmet-async';
+
 import { fetchCoinInfo, fetchCoinTickers } from './api';
 
 import Price from './Price';
@@ -148,11 +151,12 @@ interface ITickersData {
 
 function Coin() {
   const location = useLocation();
+  const navigation = useNavigate();
   const state = location.state as RouteState;
 
   const { coinId } = useParams<keyof RouteParams>();
 
-  const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(['info', coinId], () => fetchCoinInfo(coinId));
+  const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(['info', coinId], () => fetchCoinInfo(coinId), { refetchInterval: 10000 });
 
   const { isLoading: tickersLoading, data: tickersData } = useQuery<ITickersData>(['tickers', coinId], () => fetchCoinTickers(coinId));
 
@@ -160,7 +164,15 @@ function Coin() {
 
   return (
     <Container>
+      <HelmetProvider>
+        <Helmet>
+          <title>{state?.name ? state.name : loading ? 'Loading...' : infoData?.name}</title>
+        </Helmet>
+      </HelmetProvider>
       <Header>
+        <button type="button" onClick={() => navigation(-1)}>
+          &larr;이전으로 가기
+        </button>
         <Title>{state?.name ? state.name : loading ? 'Loading...' : infoData?.name}</Title>
       </Header>
       {loading ? (
@@ -177,8 +189,8 @@ function Coin() {
               <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{infoData?.open_source ? 'Yes' : 'No'}</span>
+              <span>Price:</span>
+              <span>${tickersData?.quotes.USD.price.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoData?.description}</Description>

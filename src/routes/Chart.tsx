@@ -23,7 +23,7 @@ interface IHistorical {
 function Chart({ coinId }: ChartPros) {
   const params = useParams();
 
-  const { isLoading, data } = useQuery<IHistorical[]>(['ohlcv', coinId], () => fetchCoinHistory(coinId));
+  const { isLoading, data } = useQuery<IHistorical[]>(['ohlcv', coinId], () => fetchCoinHistory(coinId), { refetchInterval: 100000 });
 
   return (
     <>
