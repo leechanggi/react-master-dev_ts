@@ -149,11 +149,7 @@ interface ITickersData {
   };
 }
 
-interface ICoinProps {
-  isDark: boolean;
-}
-
-function Coin({ isDark }: ICoinProps) {
+function Coin() {
   const location = useLocation();
   const navigation = useNavigate();
   const state = location.state as RouteState;
@@ -174,9 +170,6 @@ function Coin({ isDark }: ICoinProps) {
         </Helmet>
       </HelmetProvider>
       <Header>
-        {/* <button type="button" onClick={() => navigation(-1)}>
-          &larr;이전으로 가기
-        </button> */}
         <Title>{state?.name ? state.name : loading ? 'Loading...' : infoData?.name}</Title>
       </Header>
       {loading ? (
@@ -217,7 +210,7 @@ function Coin({ isDark }: ICoinProps) {
             </Tab>
           </Tabs>
           <Routes>
-            <Route path="chart" element={<Chart isDark={isDark} coinId={coinId} />} />
+            <Route path="chart" element={<Chart coinId={coinId} />} />
             <Route path="price" element={<Price />} />
           </Routes>
         </>
