@@ -6,6 +6,7 @@ import ApexChart from 'react-apexcharts';
 import { fetchCoinHistory } from './api';
 
 interface ChartPros {
+  isDark: boolean;
   coinId: string | undefined;
 }
 
@@ -20,7 +21,7 @@ interface IHistorical {
   market_cap: number;
 }
 
-function Chart({ coinId }: ChartPros) {
+function Chart({ isDark, coinId }: ChartPros) {
   const params = useParams();
 
   const { isLoading, data } = useQuery<IHistorical[]>(['ohlcv', coinId], () => fetchCoinHistory(coinId), { refetchInterval: 100000 });
@@ -40,7 +41,7 @@ function Chart({ coinId }: ChartPros) {
           ]}
           options={{
             theme: {
-              mode: 'dark',
+              mode: isDark ? 'dark' : 'light',
             },
             stroke: {
               curve: 'smooth',
